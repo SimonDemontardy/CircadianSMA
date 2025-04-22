@@ -16,11 +16,11 @@ celerities = {
 
 
 # Initialisation des états
-G, PC, C= 1, 1, 0 # État initial
-x, y = 1.0, 0.0  # Position initiale correcte
+G, PC, C= 0, 0, 0 # État initial
+x, y = 0.0, 1.0  # Position initiale correcte
 epsilon = 0.05  # Seuil de tolérance
 dt = 1  # Pas de temps
-max_time = 50  # Temps maximal simulé en heures
+max_time = 20  # Temps maximal simulé en heures
 max_iterations = 5000  # Sécurité pour éviter boucle infinie
 
 # Stockage des données pour affichage
