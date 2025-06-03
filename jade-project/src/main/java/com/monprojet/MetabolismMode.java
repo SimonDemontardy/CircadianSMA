@@ -20,7 +20,7 @@ class StockageMode implements MetabolismMode {
         if (complexePerCry == 0) {     // influence de PER CRY
             krebs(s, 3.1);
         }else if (complexePerCry == 1 ){
-            krebs(s, 10);         // valeur augmentée à étudier
+            krebs(s, 6);         // valeur augmentée à étudier
         }                              // AcetylCoA → ATP
         lipogenese(s, 0.86);      // AcetylCoA → AG
         nourish(s, 10);           // import de glucose dans le systeme
@@ -107,7 +107,7 @@ class ConsommationMode implements MetabolismMode {
         if (complexePerCry == 0) {
             krebs(s, 20.4);
         }else if (complexePerCry == 1 ){
-            krebs(s, 40.4);            // valeur augmentée à étudier
+            krebs(s, 30.4);            // valeur augmentée à étudier
         }                                     // AcetylCoA → ATP
         movement(s, 77);           // ATP → Mouvement
     }

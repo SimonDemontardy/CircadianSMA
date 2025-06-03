@@ -126,7 +126,8 @@ public class ThomasNetwork {
         y += celerities[1] * dt;
         currentTime += dt;
         
-        // Gestion des transitions
+        // Gestion des transitions dans le cas où le glissement fait une transition instantanée et la provoque
+        /* 
         if (G == 1 && PC == 1) {
             if (x <= epsilon) {
                 G = 0; PC = 1; x = 1;
@@ -150,6 +151,39 @@ public class ThomasNetwork {
                 G = 1; PC = 1; y = 0;
             } else if (x >= 1 - epsilon) {
                 G = 1; PC = 1; x = 1; y = 0;
+            }
+        } */
+        if (G == 1 && PC == 1) {
+            if (x <= epsilon) {
+                G = 0; PC = 1; x = 1;
+            } else {
+                if (y >= 1 - epsilon) {
+                    y = 1;
+                }
+            }
+        } else if (G == 0 && PC == 1) {
+            if (y <= epsilon) {
+                G = 0; PC = 0; y = 1;
+            } else {
+                if (x <= epsilon) {
+                    x = 0;
+                }
+            }
+        } else if (G == 0 && PC == 0) {
+            if (x >= 1 - epsilon) {
+                G = 1; PC = 0; x = 0;
+            } else {
+                if (y <= epsilon) {
+                    y = 0;
+                }
+            }
+        } else if (G == 1 && PC == 0) {
+            if (y >= 1 - epsilon) {
+                G = 1; PC = 1; y = 0;
+            } else {
+                if (x >= 1 - epsilon) {
+                    x = 1;
+                }
             }
         }
     }
