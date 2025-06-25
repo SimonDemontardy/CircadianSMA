@@ -9,8 +9,8 @@ import jade.lang.acl.ACLMessage;
 public class ThalamusAgent extends Agent {
     // initialisation des constantes de sécretion hormonale
     private static final double CORTISOL_RELEASE_AMOUNT = 5.0; // µg/dL envoyés à l'environnement en fonction du NSC
-    private static final double INSULIN_RELEASE_AMOUNT = 10.0; // Unité arbitraire pour l'insuline
-    private static final double GLUCAGON_RELEASE_AMOUNT = 2.0; // Unité arbitraire pour le glucagon
+    private static final double INSULIN_RELEASE_AMOUNT = 5.0; // Unité arbitraire pour l'insuline
+    private static final double GLUCAGON_RELEASE_AMOUNT = 5.0; // Unité arbitraire pour le glucagon
 
     @Override
     protected void setup() {
@@ -41,7 +41,7 @@ public class ThalamusAgent extends Agent {
                     }
                 }
 
-                // on récupère l'heure biologique continue pour éviter les décalages
+                /*// on récupère l'heure biologique continue pour éviter les décalages
                 double time = NSCAgent.currentTime % 24;
 
                 // 1. Sécrétion d'insuline à chaque repas (8h, 12h, 20h) format guillaume
@@ -65,7 +65,28 @@ public class ThalamusAgent extends Agent {
                 // 3. Pas de sécrétion hormonale ( n'arrive pas)
                 else {
                     System.out.println("Pas de sécrétion hormonale à " + time + "h");
+                }*/
+
+
+                // sécrétion hormonale basée sur la glycémie:
+    
+                double glycemie = EnvironmentModel.getInstance().getGlucoseLevel();
+
+                if (glycemie > 60) {
+                    EnvironmentModel.getInstance().addInsulin(INSULIN_RELEASE_AMOUNT);
+                    System.out.println("📤 Insuline envoyée (hyperglycémie)");
+                } 
+                //else if (glycemie < 3) {
+                    //EnvironmentModel.getInstance().addCortisol(GLUCAGON_RELEASE_AMOUNT);
+                    //System.out.println("📤 Glucagon envoyé (hypoglycémie)");
+                //}
+                //else if (glycemie >= 3 && glycemie <= 7) {
+                else {
+                    EnvironmentModel.getInstance().addGlucagon(GLUCAGON_RELEASE_AMOUNT);
+                    System.out.println("📤 Glucagon envoyé (glycémie normale)");
                 }
+
+
             }
         });
     }

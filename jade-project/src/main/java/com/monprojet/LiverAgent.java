@@ -7,16 +7,29 @@ import jade.core.behaviours.TickerBehaviour;
 import javafx.application.Platform;
 
 public class LiverAgent extends Agent {
-    private ThomasNetwork circadianClock;
-    private MetabolicState metabolicState = new MetabolicState();
-    private MetabolismMode currentMode;
 
+    private ThomasNetwork circadianClock;
+    private MetabolismMode metabolismMode;
+    private MetabolismMode currentMode;
     private static final double INSULIN_THRESHOLD = 5.0;
     private static final double GLUCAGON_THRESHOLD = 5.0;
     private static final double CORTISOL_THRESHOLD = 12.0;
     protected static int AMPK = 1;
-
     private ATPTrendDetector atpDetector = new ATPTrendDetector();
+    //private MetabolicState metabolicState = new MetabolicState();
+
+    // new
+    public LiverAgent() {
+    }
+
+    public LiverAgent(MetabolismMode metabolismMode) {
+        this.metabolismMode = metabolismMode;
+    }
+
+    public void metabolismeMode(int complexePerCry) {
+        EnvironmentModel env = EnvironmentModel.getInstance();
+        metabolismMode.execute(env, complexePerCry);
+    }
 
     //private boolean cortisolHigh = false; // État du cortisol reçu de l'environnement
     //private double currentHour = 0.0; // Heure biologique continue
@@ -78,10 +91,10 @@ public class LiverAgent extends Agent {
 
                 // Exécuter le mode métabolique si défini
                 if (currentMode != null) {
-                    currentMode.execute(metabolicState, circadianClock.getPC());
+                    currentMode.execute(env, circadianClock.getPC());
                 }
 
-                ATPTrendDetector.ATPState state = atpDetector.updateAndDetect(metabolicState.atp);
+                ATPTrendDetector.ATPState state = atpDetector.updateAndDetect(env.getAtp());
                 switch (state) {
                     case HIGH:
                         System.out.println("🔺 ATP élevé");
@@ -113,17 +126,17 @@ public class LiverAgent extends Agent {
                     );
                     LivePlot.updateMetabolicChart(
                         NSCAgent.currentTime,
-                        metabolicState.glucose,
-                        metabolicState.glycogene,
-                        metabolicState.acidesGras,
-                        metabolicState.acidesAmines,
-                        //metabolicState.atp,
-                        metabolicState.acetylCoA,
-                        metabolicState.pyruvate 
+                        env.getGlucose(),
+                        env.getGlycogene(),
+                        env.getAcidesGras(),
+                        env.getAcidesAmines(),
+                        //env.getatp,
+                        env.getAcetylCoA(),
+                        env.getPyruvate() 
                     );            
                     LivePlot.updateATPchart(
                         NSCAgent.currentTime,
-                        metabolicState.atp
+                        env.getAtp()
                     );        
                     LivePlot.updateAMPKChart(
                         NSCAgent.currentTime,
@@ -136,13 +149,13 @@ public class LiverAgent extends Agent {
 
                 // Affichage de l'état métabolique
                 System.out.println(String.format("⚙️ État métabolique → Glucose: %.2f | Glycogène: %.2f | AG: %.2f | AA: %.2f | ATP: %.2f | AcetylCoA: %.2f | Pyruvate: %.2f",
-                        metabolicState.glucose,
-                        metabolicState.glycogene,
-                        metabolicState.acidesGras,
-                        metabolicState.acidesAmines,
-                        metabolicState.atp,
-                        metabolicState.acetylCoA,
-                        metabolicState.pyruvate));
+                        env.getGlucose(),
+                        env.getGlycogene(),
+                        env.getAcidesGras(),
+                        env.getAcidesAmines(),
+                        env.getAtp(),
+                        env.getAcetylCoA(),
+                        env.getPyruvate()));
             }
             
         });

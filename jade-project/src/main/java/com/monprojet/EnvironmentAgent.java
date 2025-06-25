@@ -25,6 +25,17 @@ public class EnvironmentAgent extends Agent {
             @Override
             protected void onTick() {
 
+                // manger les 3 repas
+
+                double currentTime = NSCAgent.currentTime;
+                double timeOfDay = currentTime % 24.0;
+                if (timeOfDay == 8.0 || timeOfDay == 12.0 || timeOfDay == 19.0) {
+                    // Repas à 8h, 12h et 19h
+                    double glucoseAmount = 40.0; // Quantité de glucose ingérée
+                    EnvironmentModel.getInstance().addGlucose(glucoseAmount);
+                    System.out.println("🍽️ Repas à " + currentTime + "h → +" + glucoseAmount + " de glucose");
+                }
+
                 // Dégradation naturelle
                 env.degradeCortisol(DEGRADATION_RATE);
                 env.degradeInsulin(DEGRADATION_RATE);
