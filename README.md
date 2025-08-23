@@ -9,6 +9,8 @@ anything else is either tests or analysis in order to build the SMA so dont look
 
 however there is 2 FBA that has been used and still atm: FBAstockage.py and FBAconso.py. worth a shot. 
 
+to view the SMA in a whole, there is a file called SMA_representation.pdf
+
 Anything else have high chance to be cleared in the future. 
 
 enjoy reading. 
