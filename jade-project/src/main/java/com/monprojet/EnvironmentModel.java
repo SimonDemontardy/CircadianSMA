@@ -4,7 +4,7 @@ public class EnvironmentModel {
     private static EnvironmentModel instance = new EnvironmentModel();
 
     //private static EnvironmentModel instance = new EnvironmentModel();
-    private int minuit = 0;
+    //private int minuit = 0;
     // si le temps est divisé par 24 = 0, alors c'est minuit
     //Métabolites (fusion des variables MetabolicState ici)
     private double glucose = 10;
@@ -125,7 +125,7 @@ public class EnvironmentModel {
     public void removeAcetylCoA(double amount) { this.acetylCoA -= amount;}
 
 
-    public void setMinuit(int minuit) {
-        this.minuit = minuit;
-    }
+    //public void setMinuit(int minuit) {
+      //  this.minuit = minuit;
+    //}
 }

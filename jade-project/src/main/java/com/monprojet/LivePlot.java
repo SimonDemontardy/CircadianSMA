@@ -91,7 +91,7 @@ public class LivePlot extends Application {
         seriesPC_NSC.setName("PC (NSC)");
         seriesLight.setName("Lumière");
 
-        nscChart.getData().addAll(seriesG_NSC, seriesPC_NSC, seriesLight);
+        //nscChart.getData().addAll(seriesG_NSC, seriesPC_NSC, seriesLight);
 
         // -- 2. Graphique Liver (réseau) --
         final NumberAxis xAxisLiver = new NumberAxis();
@@ -107,7 +107,7 @@ public class LivePlot extends Application {
         seriesCortisol.setName("Cortisol (binaire)");
         seriesAMPKLiv.setName("AMPK (binaire)");
 
-        liverChart.getData().addAll(seriesG_Liver, seriesPC_Liver, seriesCortisol, seriesAMPKLiv);
+        //liverChart.getData().addAll(seriesG_Liver, seriesPC_Liver, seriesCortisol, seriesAMPKLiv);
 
         // -- 2bis Graphique surrénale (réseau) --
         final NumberAxis xAxisSurrenal = new NumberAxis();
@@ -122,7 +122,7 @@ public class LivePlot extends Application {
         seriesPC_Surrenal.setName("PC (Surrénal)");
         seriesCortisolSurrenal.setName("Cortisol (binaire)");
 
-        SurrenalClockChart.getData().addAll(seriesG_Surrenal, seriesPC_Surrenal, seriesCortisolSurrenal);
+        //SurrenalClockChart.getData().addAll(seriesG_Surrenal, seriesPC_Surrenal, seriesCortisolSurrenal);
 
         // -- 2ter Graphique Pancréas (réseau) --
         final NumberAxis xAxisPancreas = new NumberAxis();
@@ -137,7 +137,7 @@ public class LivePlot extends Application {
         seriesPC_Pancreas.setName("PC (Pancréas)");
         seriesGlucosePancreas.setName("Glucose (Pancréas)");
 
-        PancreasClockChart.getData().addAll(seriesG_Pancreas, seriesPC_Pancreas, seriesGlucosePancreas);
+        //PancreasClockChart.getData().addAll(seriesG_Pancreas, seriesPC_Pancreas, seriesGlucosePancreas);
 
         // -- graph beta cells --
         final NumberAxis xAxisBeta = new NumberAxis();
@@ -153,7 +153,7 @@ public class LivePlot extends Application {
         seriesGlucoseBeta.setName("Glucose ressource (Beta Cells)");
         seriesInsulineBeta.setName("Insuline ressource (Beta Cells)");
 
-        BetaClockChart.getData().addAll(seriesG_Beta, seriesPC_Beta, seriesGlucoseBeta, seriesInsulineBeta);
+        //BetaClockChart.getData().addAll(seriesG_Beta, seriesPC_Beta, seriesGlucoseBeta, seriesInsulineBeta);
 
         // -- graph alpha cells --
         final NumberAxis xAxisAlpha = new NumberAxis();
@@ -167,7 +167,7 @@ public class LivePlot extends Application {
         seriesPC_Alpha.setName("PC (Alpha Cells)");
         seriesGlucoseAlpha.setName("Glucose ressource (Alpha Cells)");
 
-        AlphaClockChart.getData().addAll(seriesG_Alpha, seriesPC_Alpha, seriesGlucoseAlpha);
+        //AlphaClockChart.getData().addAll(seriesG_Alpha, seriesPC_Alpha, seriesGlucoseAlpha);
 
 
 
@@ -184,7 +184,7 @@ public class LivePlot extends Application {
         seriesInsuline.setName("Insuline");
         seriesGlucagon.setName("Glucagon");
 
-        hormoneChart.getData().addAll(seriesCortisolEnv, seriesInsuline, seriesGlucagon);
+        //hormoneChart.getData().addAll(seriesCortisolEnv, seriesInsuline, seriesGlucagon);
 
         // -- 4. Graphique Métabolisme Foie --
         final NumberAxis xAxisMeta = new NumberAxis();
@@ -202,7 +202,7 @@ public class LivePlot extends Application {
         seriesAcetylCoa.setName("Acétyl-CoA");
         seriesPyruvate.setName("Pyruvate");
 
-        metabolismChart.getData().addAll(seriesGlucose, seriesGlycogene, seriesAG, seriesAcetylCoa, seriesPyruvate, seriesAA);
+        //metabolismChart.getData().addAll(seriesGlucose, seriesGlycogene, seriesAG, seriesAcetylCoa, seriesPyruvate, seriesAA);
 
         // 5 graph de l'ATP
         final NumberAxis xAxisATP = new NumberAxis();
@@ -212,7 +212,7 @@ public class LivePlot extends Application {
         atpChart = new LineChart<>(xAxisATP, yAxisATP);
         atpChart.setTitle("Environnement - ATP");
         seriesATP.setName("ATP");
-        atpChart.getData().addAll(seriesATP);
+        //atpChart.getData().addAll(seriesATP);
 
         // -- 6. Graphique AMPK --
         final NumberAxis xAxisAMPK = new NumberAxis();
@@ -222,7 +222,7 @@ public class LivePlot extends Application {
         ampkChart = new LineChart<>(xAxisAMPK, yAxisAMPK);
         ampkChart.setTitle("AMPK - État");
         seriesAMPK.setName("AMPK");
-        ampkChart.getData().addAll(seriesAMPK);
+        //ampkChart.getData().addAll(seriesAMPK);
 
 
         // -- Disposition dans la fenêtre --
