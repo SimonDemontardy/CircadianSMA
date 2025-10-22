@@ -3,7 +3,6 @@ package com.monprojet;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
-import javafx.application.Platform;
 
 // cette classe représente l'agent NSC (Noyau Suprachiasmatique) qui possède un cycle circadien influencé 
 // par la lumière et agissant sur la production de cortisol.
@@ -34,7 +33,7 @@ public class NSCAgent extends Agent {
 */
 
     // initialisations
-    private ThomasNetwork nscClock; // horloge circadienne
+    public static ThomasNetwork nscClock; // horloge circadienne
     private boolean LightHigh = false; // Lumière
     public static double currentTime = 0.0; // Heure biologique continue
 
@@ -48,7 +47,7 @@ public class NSCAgent extends Agent {
         // G: la forme libre de PER/CRY: 0 car on démarre à minuit
         // PC: la forme complexe de PER/CRY: 1 car on démarre à minuit
         // la ressource principale, ici lumière: 0 car on démarre à minuit
-        nscClock= new ThomasNetwork(0, 1, 0, "Light", 1,1); // parce que on démarre à minuit et en géneral la nuit cortisol inibé donc pC à 1 et G 0
+        nscClock= new ThomasNetwork(1, 0, 0, "Light", 0, 0); // parce que on démarre à minuit et en géneral la nuit cortisol inibé donc pC à 1 et G 0
 
         // lancement de l'interface graphique pour suivre les informations en temps réel
         new Thread(() -> javafx.application.Application.launch(LivePlot.class)).start();
@@ -64,7 +63,7 @@ public class NSCAgent extends Agent {
                 System.out.println("A/ NSC: Heure biologique  " + String.format("%.2f", currentTime) + "h");
 
                 // Déterminer si la lumière est activée (jour)
-                LightHigh = (currentTime % 24 >= 6) && (currentTime % 24 < 18); // Lumière active entre 6h et 18h
+                LightHigh = (currentTime % 24 >= 7) && (currentTime % 24 < 19); // Lumière active entre 6h et 18h
                 //LightHigh = false; // Lumière désactivée pour les tests
                 if (LightHigh) {
                     System.out.println("B/ lumière state ☀️ NSC: Lumière activée !");
@@ -78,29 +77,37 @@ public class NSCAgent extends Agent {
                 // méthode pour afficher chaque état de l'horloge
                 nscClock.printState();
 
+                /////////////////////////////////////////////////////
                 // Mise à jour du graphique en direct pour NSC
-                Platform.runLater(() -> {
+                /*Platform.runLater(() -> {
                     LivePlot.updateNSCChart(
                         nscClock.getCurrentTime(),
                         nscClock.getRessourceLevel(), // Lumière
                         nscClock.getG(),
                         nscClock.getPC()
                     );
-                });
+                });*/
+
+                
 
 
                 // Si PC est à 1, inibition de la sécrétion de cortisol
                 if (nscClock.getPC() == 1) {
-                    System.out.println("C/ Message au Thalamus: 🛑 NSC: PC=1 → Sécrétion de cortisol INHIBÉE.");
-                    return; // Ne pas envoyer de message
+                    System.out.println("C/ Message au surrenal: sécrétion du cortisol ralentie ");
+                    ACLMessage msginib = new ACLMessage(ACLMessage.INFORM);
+                    msginib.addReceiver(getAID("Surrenal")); // thalamus receveur
+                    msginib.setContent("Cortisol Inhibition"); // content du message
+                    send(msginib); // envoi du message
+                } else if (nscClock.getPC() == 0) {
+                    // Si PC = 0, envoie d'un message au Thalamus pour libérer du cortisol
+                    ACLMessage msgfree = new ACLMessage(ACLMessage.INFORM);
+                    msgfree.addReceiver(getAID("Surrenal")); //thalamus receveur
+                    msgfree.setContent("Cortisol free"); // content du message
+                    send(msgfree); // envoi du message
+                    System.out.println("C/ Message à surrenal NSC: cortisol sécrétion!"); // affichage confirmation d'envoi
                 }
 
-                // Si PC = 0, envoie d'un message au Thalamus pour libérer du cortisol
-                ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-                msg.addReceiver(getAID("Thalamus")); //thalamus receveur
-                msg.setContent("Produce Cortisol"); // content du message
-                send(msg); // envoi du message
-                System.out.println("C/ Message au Thalamus 📢 NSC: cortisol sécrétion!"); // affichage confirmation d'envoi
+
             }
         });
     }
@@ -113,4 +120,19 @@ public class NSCAgent extends Agent {
         msg.setContent("Cortisol: " + amount);
         send(msg);
     }*/
+    public static double getCurrentTime() {
+        return currentTime;
+    }
+    public ThomasNetwork getNscClock() {
+        return nscClock;
+    }
+    public static double getRessourceLevel_NSC() {
+        return nscClock.getRessourceLevel();
+    }
+    public static int getG_NSC() {
+        return nscClock.getG();
+    }
+    public static int getPC_NSC() {
+        return nscClock.getPC();
+    }
 }

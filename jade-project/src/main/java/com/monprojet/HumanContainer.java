@@ -22,17 +22,26 @@ public class HumanContainer {
             
 
             // Démarrage des agents
+            AgentController simulationManagerAgent = humanContainer.createNewAgent("SimulationManager", SimulationManagerAgent.class.getName(), null);
             AgentController nscAgent = humanContainer.createNewAgent("NSC", NSCAgent.class.getName(), null);
             AgentController environmentAgent = humanContainer.createNewAgent("Environment", EnvironmentAgent.class.getName(), null);
             AgentController liverAgent = humanContainer.createNewAgent("Liver", "com.monprojet.LiverAgent", null);
-            AgentController ThalamusAgent = humanContainer.createNewAgent("Thalamus", "com.monprojet.ThalamusAgent", null);
+            AgentController SurrenalAgent = humanContainer.createNewAgent("Surrenal", "com.monprojet.SurrenalAgent", null);
+            AgentController PancreasAgent = humanContainer.createNewAgent("Pancreas", "com.monprojet.PancreasAgent", null);
+            AgentController AlphaCellAgent = humanContainer.createNewAgent("AlphaCell", "com.monprojet.AlphaCellAgent", null);
+            AgentController BetaCellAgent = humanContainer.createNewAgent("BetaCell", "com.monprojet.BetaCellAgent", null);
 
             
             // Lancer les agents
+            simulationManagerAgent.start();
             nscAgent.start();
             environmentAgent.start();
             liverAgent.start();
-            ThalamusAgent.start();
+            SurrenalAgent.start();
+            PancreasAgent.start();
+            AlphaCellAgent.start();
+            BetaCellAgent.start();
+
 
             // Démarrer les organes comme agents JADE
             //AgentController clockAgent = humanContainer.createNewAgent("Clock", "com.monprojet.MasterClockAgent", null);
@@ -43,7 +52,7 @@ public class HumanContainer {
             //AgentController immuneSystemAgent = humanContainer.createNewAgent("ImmuneSystem", "com.monprojet.ImmuneAgent", null);
             //AgentController cortisolAgent = humanContainer.createNewAgent("Cortisol", "com.monprojet.CortisolAgent", null);
             //AgentController melatoninAgent = humanContainer.createNewAgent("Melatonin", "com.monprojet.MelatoninAgent", null);
-            //AgentController ThalamusAgent = humanContainer.createNewAgent("Thalamus", "com.monprojet.ThalamusAgent", null);
+            //AgentController SurrenalAgent = humanContainer.createNewAgent("Thalamus", "com.monprojet.SurrenalAgent", null);
 
             // Lancer les agents
             //clockAgent.start();
@@ -54,7 +63,7 @@ public class HumanContainer {
             //immuneSystemAgent.start();
             //cortisolAgent.start();
             //melatoninAgent.start();
-            //ThalamusAgent.start();
+            //SurrenalAgent.start();
             
 
             System.out.println("✅ HumanContainer started and connected to GUI JADE.");

@@ -4,12 +4,13 @@ public class EnvironmentModel {
     private static EnvironmentModel instance = new EnvironmentModel();
 
     //private static EnvironmentModel instance = new EnvironmentModel();
-
+    private int minuit = 0;
+    // si le temps est divisé par 24 = 0, alors c'est minuit
     //Métabolites (fusion des variables MetabolicState ici)
     private double glucose = 10;
     private double glycogene = 0;
     private double acidesGras = 0;
-    private double acidesAmines = 0;
+    private double acidesAmines = 10;
     private double atp = 1000.0;
     private double pyruvate = 1;
     private double acetylCoA = 1;
@@ -25,10 +26,10 @@ public class EnvironmentModel {
         glucagonLevel = 0.0;
         //glucoseLevel = 0.0;
         // Initialisation des métabolites
-        glucose = 50;
+        glucose = 40;
         glycogene = 0;
         acidesGras = 0;
-        acidesAmines = 0;
+        acidesAmines = 100;
         atp = 1000.0;
         pyruvate = 1;
         acetylCoA = 1;
@@ -45,7 +46,7 @@ public class EnvironmentModel {
     }
 
     public void addCortisol(double amount) {
-        this.cortisolLevel += amount;
+        cortisolLevel += amount;
     }
 
     public void degradeCortisol(double rate) {
@@ -59,7 +60,7 @@ public class EnvironmentModel {
     }
 
     public void addInsulin(double amount) {
-        this.insulinLevel += amount;
+        insulinLevel += amount;
     }
 
     public void degradeInsulin(double rate) {
@@ -73,7 +74,7 @@ public class EnvironmentModel {
     }
 
     public void addGlucagon(double amount) {
-        this.glucagonLevel += amount;
+        glucagonLevel += amount;
     }
 
     public void degradeGlucagon(double rate) {
@@ -122,4 +123,9 @@ public class EnvironmentModel {
     public void setAcetylCoA(double acetylCoA) { this.acetylCoA = acetylCoA; }
     public void addAcetylCoA(double amount) { this.acetylCoA += amount; }
     public void removeAcetylCoA(double amount) { this.acetylCoA -= amount;}
+
+
+    public void setMinuit(int minuit) {
+        this.minuit = minuit;
+    }
 }

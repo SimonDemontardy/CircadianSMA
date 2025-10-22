@@ -13,19 +13,26 @@ class StockageMode implements MetabolismMode {
     @Override
     //public void execute(MetabolicState s, int complexePerCry) {
     public void execute(EnvironmentModel env, int complexePerCry) {
+
         System.out.println("\uD83D\uDCC5 Mode : Stockage activé (insuline)");
+        double[] vitessesScenario0 = {1.0, 5.0, 10.0, 3.1, 6, 0.8, 70.0}; // glycogenese, glycolyse, pyrToCoA, krebs, krebsPC1, lipogenese, movement
+        double[] vitessesScenario1 = {1.1428, 0.25, 0.5, 0.2142, 0.3,  0.035713, 17.9};
+        double[] vitessesScenario2 = {4.5712, 1.0, 2.0, 0.8568, 1.2, 0.142852, 71.6};
+
         // réactions du stockage avec leurs vitesses obtenues par FBA
-        glycogenese(env, 4.46);     // glucose → glycogène
-        glycolyse(env, 5);          // glucose → pyruvate + ATP
-        pyrToCoA(env, 10);          // pyruvate → AcetylCoA
+        glycogenese(env, vitessesScenario0[0]);     // glucose → glycogène
+        // bcp trop de glycogène produit
+        //glycogenese(env, 4.46);     // glucose → glycogène
+        glycolyse(env, vitessesScenario0[1]);          // glucose → pyruvate + ATP
+        pyrToCoA(env, vitessesScenario0[2]);          // pyruvate → AcetylCoA
         if (complexePerCry == 0) {     // influence de PER CRY
-            krebs(env, 3.1);
+            krebs(env, vitessesScenario0[3]);
         }else if (complexePerCry == 1 ){
-            krebs(env, 6);         // valeur augmentée à étudier
+            krebs(env, vitessesScenario0[4]);         // valeur augmentée à étudier
         }                              // AcetylCoA → ATP
-        lipogenese(env, 0.86);      // AcetylCoA → AG
+        lipogenese(env, vitessesScenario0[5]);      // AcetylCoA → AG
         //nourish(env, 10);           // import de glucose dans le systeme
-        movement(env, 77);          
+        movement(env, vitessesScenario0[6]);
         //aminoacids(s, 5);
     }
     /*private void aminoacids(MetabolicState s, double rate) {
@@ -120,7 +127,7 @@ class StockageMode implements MetabolismMode {
         if (env.getAcetylCoA() >= 8 * rate && env.getAtp() >= 2 * rate) {
             env.removeAcetylCoA(8 * rate);
             env.addAcidesGras(rate);
-            env.removeAtp(2 * rate);
+            env.removeAtp(7 * rate);
             //System.out.println("💥 Lipogenèse : AcetylCoA -" + (8 * rate) + ", AG +" + rate + ", ATP -" + (2 * rate));
         }
     }
@@ -144,18 +151,25 @@ class ConsommationMode implements MetabolismMode {
     //public void execute(MetabolicState s, int complexePerCry) {
     public void execute(EnvironmentModel env, int complexePerCry) {
         System.out.println("\uD83D\uDD04 Mode : Consommation activé (glucagon / AMPK)");
+        
+        double[] vitessesScenarioA = {7.0, 5.0, 10.0, 1.6, 20.4, 30.4, 70.0}; // glycogenolyse, glycolyse, pyrToCoA, betaOxydation, krebs, krebsPC1, movement
+        double[] vitessesScenarioB = {0.2506, 0.25, 0.5, 0.1125, 1.401,  1.5, 17.9};
+        double[] vitessesScenarioC = {1.0024, 1.0, 2.0, 0.45, 5.604, 6.0, 71.6};
 
-        glycogenolyse(env, 5);       // Glycogène → Glucose
-        glycolyse(env, 5);           // Glucose → Pyruvate + ATP
-        pyrToCoA(env, 10);            // Pyruvate → AcetylCoA
-        betaOxydation(env, 1.3);       // AG → AcetylCoA
+
+        glycogenolyse(env, vitessesScenarioA[0]);       // Glycogène → Glucose
+        glycolyse(env, vitessesScenarioA[1]);           // Glucose → Pyruvate + ATP
+        pyrToCoA(env, vitessesScenarioA[2]);            // Pyruvate → AcetylCoA
+        // trop de betaox
+        betaOxydation(env, vitessesScenarioA[3]);
+        //betaOxydation(env, 1.3);       // AG → AcetylCoA
         //transamination(s, 2);    // AA → Pyruvate
         if (complexePerCry == 0) {
-            krebs(env, 20.4);
+            krebs(env, vitessesScenarioA[4]);
         }else if (complexePerCry == 1 ){
-            krebs(env, 30.4);            // valeur augmentée à étudier
+            krebs(env, vitessesScenarioA[5]);            // valeur augmentée à étudier
         }                                     // AcetylCoA → ATP
-        movement(env, 77);           // ATP → Mouvement
+        movement(env, vitessesScenarioA[6]);           // ATP → Mouvement
     }
 
 
@@ -268,6 +282,39 @@ class ConsommationMode implements MetabolismMode {
             System.out.println("UN MOVEMENT A EU LIEU");
         }
     }*/
+}
+
+class Neoglucogenese implements MetabolismMode {
+    
+    @Override
+    //public void execute(MetabolicState s, int complexePerCry) {
+    public void execute(EnvironmentModel env, int complexePerCry) {
+        System.out.println("\uD83D\uDD04 Mode : Néoglucogenèse activé (glucagon / AMPK)");
+        // réactions de néoglucogenèse avec leurs vitesses obtenues par FBA
+        gluconeogenese(env, 5);
+        movement(env, 70); // ATP → Mouvement
+    }
+
+    private void gluconeogenese(EnvironmentModel env, double rate) {
+        if (env.getPyruvate() >= rate && env.getAtp() >= 2 * rate) {
+            env.removePyruvate(rate);
+            env.addGlucose(rate);
+            env.removeAtp(2 * rate);
+            //System.out.println("🧬 Néoglucogenèse : AA -" + rate + ", Glucose +" + rate + ", ATP -" + (2 * rate));
+        } else if (env.getAcidesAmines() >= rate && env.getAtp() >= 2 * rate) {
+            env.removeAcidesAmines(rate);
+            env.addGlucose(rate);
+            env.removeAtp(2 * rate);
+            //System.out.println("🧬 Néoglucogenèse : AA -" + rate + ", Glucose +" + rate + ", ATP -" + (2 * rate));
+        }
+    }
+    private void movement(EnvironmentModel env, double rate) {
+        if (env.getAtp() >= rate) {
+            env.removeAtp(rate);
+            //System.out.println("🏃‍♂️ Déplacement : ATP -" + rate);
+            System.out.println("UN MOVEMENT A EU LIEU");
+        }
+    }
 }
 
 

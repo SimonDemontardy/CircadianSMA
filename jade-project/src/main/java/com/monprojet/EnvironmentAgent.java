@@ -3,11 +3,12 @@ package com.monprojet;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
-import javafx.application.Platform;
 
 public class EnvironmentAgent extends Agent {
 
     private static final double DEGRADATION_RATE = 0.3; // Dégradation exponentielle par tick
+    private static final double Repas = 30.0; // Quantité de glucose ingérée par repas
+
 
     @Override
     protected void setup() {
@@ -20,7 +21,7 @@ public class EnvironmentAgent extends Agent {
         //env.addGlucagon(0.0);
 
         addBehaviour(new TickerBehaviour(this, (long) (ThomasNetwork.dt * 1000)) {
-            private boolean firstTick = true;
+            //private boolean firstTick = true;
 
             @Override
             protected void onTick() {
@@ -31,10 +32,26 @@ public class EnvironmentAgent extends Agent {
                 double timeOfDay = currentTime % 24.0;
                 if (timeOfDay == 8.0 || timeOfDay == 12.0 || timeOfDay == 19.0) {
                     // Repas à 8h, 12h et 19h
-                    double glucoseAmount = 40.0; // Quantité de glucose ingérée
+                    double glucoseAmount = 0.80* Repas; // Quantité de glucose ingérée
+                    double acidesAminesAmount = 10;
+                    // en moyenne un repas est à 30-50 g  mais 1/3 est consommé par le métabolisme directement. 
                     EnvironmentModel.getInstance().addGlucose(glucoseAmount);
+                    EnvironmentModel.getInstance().addAcidesAmines(acidesAminesAmount);
                     System.out.println("🍽️ Repas à " + currentTime + "h → +" + glucoseAmount + " de glucose");
+
+                    // 20 pourcents sont directement métabolisés en stockage
+                    double glucoseMetabolized = 0.20 * Repas;
+                    double glycogeneinstant = 0.80 * glucoseMetabolized;
+                    EnvironmentModel.getInstance().addGlycogene(glycogeneinstant);
+                    double acidesgrasMetabolized = 0.20 * 0.25 * glucoseMetabolized;
+                    EnvironmentModel.getInstance().addAcidesGras(acidesgrasMetabolized);
+                    //System.out.println("GLUCOSE INSTANT : " + glucoseMetabolized);
+                    //System.out.println("ACIDES GRAS INSTANT : " + acidesgrasMetabolized);
+                    //System.out.println("GLYCOGENE INSTANT : " + glycogeneinstant);
+
                 }
+
+
 
                 // Dégradation naturelle
                 env.degradeCortisol(DEGRADATION_RATE);
@@ -76,7 +93,7 @@ public class EnvironmentAgent extends Agent {
 
 
 
-                // 💡 Forcer 1er point sur graphique uniquement au 1er tick
+                /*// 💡 Forcer 1er point sur graphique uniquement au 1er tick
                 if (firstTick) {
                     Platform.runLater(() -> {
                         LivePlot.updateEnvironmentChart(
@@ -98,6 +115,7 @@ public class EnvironmentAgent extends Agent {
                         env.getGlucagonLevel()
                     );
                 });
+                */
 
                 // Log global de l’état
                 System.out.println(String.format(

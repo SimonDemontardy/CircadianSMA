@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class ATPTrendDetector {
-    private static final int WINDOW_SIZE = 20;
+    private static final int WINDOW_SIZE = 7;
     private Queue<Double> atpHistory = new LinkedList<>();
     private double sum = 0;
 

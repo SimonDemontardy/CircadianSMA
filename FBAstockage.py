@@ -22,31 +22,36 @@ r_glucose_import.add_metabolites({glucose: 1})
 # Glycolyse : glucose -> 2 pyruvate + 2 ATP
 r_glycolyse = Reaction('glycolyse')
 r_glycolyse.lower_bound = 0
-r_glycolyse.upper_bound = 30
+r_glycolyse.upper_bound = 5
+# previous 30
 r_glycolyse.add_metabolites({glucose: -1, pyruvate: 2, atp: 2})
 
 # Pyruvate -> Acetyl-CoA
 r_pyr_to_acoa = Reaction('pyr_to_acoa')
 r_pyr_to_acoa.lower_bound = 0
-r_pyr_to_acoa.upper_bound = 10
+r_pyr_to_acoa.upper_bound = 0.5
+# previous 10
 r_pyr_to_acoa.add_metabolites({pyruvate: -1, acetyl_coa: 1})
 
 # Glycogénogenèse : glucose -> glycogène + ATP consommé
 r_glycogenese = Reaction('glycogenese')
 r_glycogenese.lower_bound = 0
-r_glycogenese.upper_bound = 12
+r_glycogenese.upper_bound = 2
+# previous 12
 r_glycogenese.add_metabolites({glucose: -1, glycogene: 1, atp: -1})
 
 # Cycle de Krebs : Acetyl-CoA -> ATP
 r_Krebs = Reaction('krebs_cycle')
 r_Krebs.lower_bound = 0
-r_Krebs.upper_bound = 8
+r_Krebs.upper_bound = 2
+# previous 8
 r_Krebs.add_metabolites({acetyl_coa: -1, atp: 10})
 
 # Lipogenèse : 8 Acetyl-CoA + 42 ATP -> AG
 r_lipogenese = Reaction('lipogenese')
 r_lipogenese.lower_bound = 0
-r_lipogenese.upper_bound = 4
+r_lipogenese.upper_bound = 2.5
+# previous 4
 r_lipogenese.add_metabolites({acetyl_coa: -8, atp: -42, ag: 1})
 
 # Sink pour AG : permet l'export ou utilisation des AG produits

@@ -4,18 +4,20 @@ import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
 //import jade.lang.acl.ACLMessage;
 //import jade.lang.acl.MessageTemplate;
-import javafx.application.Platform;
+//import javafx.application.Platform;
 
 public class LiverAgent extends Agent {
 
-    private ThomasNetwork circadianClock;
+    public static ThomasNetwork circadianClock;
     private MetabolismMode metabolismMode;
     private MetabolismMode currentMode;
     private static final double INSULIN_THRESHOLD = 5.0;
     private static final double GLUCAGON_THRESHOLD = 5.0;
-    private static final double CORTISOL_THRESHOLD = 12.0;
+    private static final double CORTISOL_THRESHOLD = 2.0;
     protected static int AMPK = 1;
     private ATPTrendDetector atpDetector = new ATPTrendDetector();
+    private boolean cortisolHigh = false;
+    private boolean AMPKHigh = false; // Indique si l'AMPK est élevé
     //private MetabolicState metabolicState = new MetabolicState();
 
     // new
@@ -40,13 +42,8 @@ public class LiverAgent extends Agent {
         System.out.println("✅ Liver Agent " + getLocalName() + " démarré.");
         
         // 💡 Spécifie que l'horloge du foie est régulée par le cortisol
-        circadianClock = new ThomasNetwork(1,
-        1,
-        0,
-        "Cortisol and AMPK",
-        1,
-        0,
-        1); // (G=1, PC=1, C=0), régulé par "C" (cortisol)
+        //circadianClock = new ThomasNetwork(0, 0, 0, "Cortisol", 0, "AMPK", 0.37, 0.54); // (G=1, PC=1, C=0), régulé par "C" (cortisol) et AMPK
+        circadianClock = new ThomasNetwork(1, 0, 0, "Cortisol", 0, "AMPK", 0, 0); 
 
         // Comportement pour mise à jour toutes les dt heures simulées
         addBehaviour(new TickerBehaviour(this, (long) (ThomasNetwork.dt * 1000)) { // Convertit dt en millisecondes
@@ -78,7 +75,10 @@ public class LiverAgent extends Agent {
                         cortisol, insulin, glucagon));
 
                 // Déterminer le mode métabolique à activer
-                if (insulin >= INSULIN_THRESHOLD) {
+                if (cortisol >= CORTISOL_THRESHOLD) {
+                    currentMode = new Neoglucogenese();
+                    System.out.println("neoglucogenese activée");
+                } else if (insulin >= INSULIN_THRESHOLD) {                   
                     currentMode = new StockageMode();
                     System.out.println("🍞 Mode activé : Stockage (insuline)");
                 } else if (glucagon >= GLUCAGON_THRESHOLD) {
@@ -110,14 +110,18 @@ public class LiverAgent extends Agent {
                 }
 
                 // Exécuter le modèle Thomas avec l'état du cortisol
-                boolean cortisolHigh = cortisol >= CORTISOL_THRESHOLD;
-                circadianClock.update(cortisolHigh, AMPK);
+                cortisolHigh = cortisol >= CORTISOL_THRESHOLD;
+                AMPKHigh = AMPK == 1;
+                circadianClock.update(cortisolHigh, AMPKHigh);
                 circadianClock.printState();
+                //System.out.println(AMPKHigh + " AMPK High AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+
+                
 
 
 
                 // Mettre à jour le graphique en direct
-                Platform.runLater(() -> {
+                /*Platform.runLater(() -> {
                     LivePlot.updateLiverChart(
                         circadianClock.getCurrentTime(),
                         cortisolHigh ? 1.0 : 0.0, // Convert cortisol state to a numeric value
@@ -143,8 +147,7 @@ public class LiverAgent extends Agent {
                         AMPK
                     );
                 });
-
-
+                */
                 
 
                 // Affichage de l'état métabolique
@@ -157,7 +160,51 @@ public class LiverAgent extends Agent {
                         env.getAcetylCoA(),
                         env.getPyruvate()));
             }
-            
+ 
         });
+
+    
+        
     }
+
+    public double getGlycogenLevel() {
+        return EnvironmentModel.getInstance().getGlycogene();
+    }
+    public double getGlucoseLevel() {
+        return EnvironmentModel.getInstance().getGlucose();
+    }
+    public double getAcetylCoALevel() {
+        return EnvironmentModel.getInstance().getAcetylCoA();
+    }
+    public double getPyruvateLevel() {
+        return EnvironmentModel.getInstance().getPyruvate();
+    }
+    public double getAtpLevel() {
+        return EnvironmentModel.getInstance().getAtp();
+    }
+    public double getAcidesGrasLevel() {
+        return EnvironmentModel.getInstance().getAcidesGras();
+    }
+    public double getAcidesAminesLevel() {
+        return EnvironmentModel.getInstance().getAcidesAmines();
+    }
+    public int getAMPKLevel() {
+        return AMPK;
+    }
+    public int getG_Liver() {
+        return circadianClock.getG();
+    }
+    public int getPC_Liver() {
+        return circadianClock.getPC();
+    }
+    public int getRessourceLevel() {
+        return circadianClock.getRessourceLevel();
+    }
+    public int getRessource2Level() {
+        return circadianClock.getRessource2Level();
+    }
+    public double getCortisolLevel() {
+        return cortisolHigh ? 1.0 : 0.0; // Convert cortisol state to a numeric value
+    }
+
 }
